@@ -1,0 +1,65 @@
+# =========================================================================
+# Unity Ignored Folders & Files
+# =========================================================================
+/[L|l]ibrary/
+/[T|t]emp/
+/[O|o]bj/
+/[B|b]uild/
+/[B|b]uilds/
+/[L|l]ogs/
+/[U|u]ser[S|s]ettings/
+/[M|m]emoryCaptures/
+
+# =========================================================================
+# Asset Store & External Packages
+# =========================================================================
+# Ignore Asset Store packages downloaded into Assets
+/[A|a]ssets/AssetStoreTools*
+
+# Ignore Gradle build files for Android
+/[A|a]ssets/Plugins/Android/mainTemplate.gradle
+/[A|a]ssets/Plugins/Android/launcherTemplate.gradle
+/[A|a]ssets/Plugins/Android/baseProjectTemplate.gradle
+
+# =========================================================================
+# IDE & Code Editor Files
+# =========================================================================
+# Visual Studio
+/.vs/
+/*.csproj
+/*.unityproj
+/*.sln
+/*.suo
+/*.user
+/*.userprefs
+/*.pidb
+/*.booproj
+/*.svd
+/*.pdb
+/*.opendb
+/*.VC.db
+
+# Visual Studio Code
+/.vscode/
+
+# JetBrains Rider
+/.idea/
+/*.sln.iml
+
+# =========================================================================
+# OS / System Specific Files
+# =========================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# =========================================================================
+# Universal Render Pipeline (URP) & Project-Specific Notes
+# =========================================================================
+# Do NOT ignore .mat, .asset, or .renderpipeline files inside Assets/
+# (Your URP Asset and 2D Renderer Asset files live in Assets/ and must be tracked)
