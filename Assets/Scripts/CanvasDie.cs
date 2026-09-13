@@ -17,8 +17,14 @@ namespace Dice
 
         private Vector3 _startPos;
 
+        private bool _isRolling;
+
         private int _currentDieFaces = -1;
         private int _currentFaceIdx = -1;
+
+        public event System.Action OnResultDecided;
+
+        public bool IsRolling { get { return _isRolling; } }
 
         private void Awake()
         {
@@ -43,7 +49,7 @@ namespace Dice
 
         private void Start()
         {
-
+            PresentCurrentFace();
         }
 
 
@@ -51,6 +57,8 @@ namespace Dice
         {
             string debStr = $"### {name}: Die started rolling.";
             Debug.Log(debStr);
+
+            _isRolling = true;
 
             PresentCurrentFace();
         }
@@ -72,6 +80,10 @@ namespace Dice
             Debug.Log(debStr);
 
             PresentCurrentFace();
+
+            _isRolling = false;
+
+            OnResultDecided?.Invoke();
         }
 
         private void PresentCurrentFace()
@@ -109,11 +121,17 @@ namespace Dice
         // API
         //=====
 
+        public SO_DieFace GetCurrentFaceData()
+        {
+            return _currentDieData.FaceSOs[_currentFaceIdx];
+        }
+
         public void SetDiceData(SO_Die dieData)
         {
             _currentDieData= dieData;
             _currentDieFaces = DiceTools.NumFaces(_currentDieData.DeeType);
             _currentFaceIdx = 0;
+
         }
 
         public void Roll()

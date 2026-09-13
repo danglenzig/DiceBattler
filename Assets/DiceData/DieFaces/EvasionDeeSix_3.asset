@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Dice.SO_DieFace
   _integerValue: 3
   _tagStrings:
-  - ACTON.EVASION
+  - ACTION.EVASION
   _imageSprite: {fileID: 21300000, guid: e2ef832d01a668e4b802cb04a1e1f316, type: 3}

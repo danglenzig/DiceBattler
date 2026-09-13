@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2cc22ec0f6f2947a52a45ec18122be, type: 3}
+  m_Name: HybridDeeSix
+  m_EditorClassIdentifier: Assembly-CSharp::Dice.SO_Die
+  _dieName: HybridDeeSix_00
+  _deeType: 2
+  _faces:
+  - {fileID: 11400000, guid: bcc60d4e9bf981a4aadebef5bcef2720, type: 2}
+  - {fileID: 11400000, guid: 2fa85cc2e30902246b1b7373c22bd439, type: 2}
+  - {fileID: 11400000, guid: 8d38816ba5c2a3644b00f49a8d9e70cd, type: 2}
+  - {fileID: 11400000, guid: 4a1349eeb27744a42b267065d168c2cd, type: 2}
+  - {fileID: 11400000, guid: ddd7898762885f44abbcba81f14a8465, type: 2}
+  - {fileID: 11400000, guid: 896cfc677c4d4a0408b7ad44240cd63f, type: 2}
+  _tagStrings: []
