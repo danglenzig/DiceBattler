@@ -168,6 +168,8 @@ public class StateMachineTester : MonoBehaviour
         //string mostRecentHistorical = sm.StateHistoryStrings[sm.StateHistoryStrings.Count - 1];
         // ^^Not working. Why?
 
+        Debug.Log($"### {name}: history count: {sm.StateHistoryStrings.Count}");
+
         Debug.Log($"### {name}: state exited: {exitedStateString}");
     }
 

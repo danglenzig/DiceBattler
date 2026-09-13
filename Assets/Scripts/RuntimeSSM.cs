@@ -50,10 +50,10 @@ namespace SimpleStateMachine
 
         private void FixStateHistory(string lastExitedStateString)
         {
-            _stateHistory.Append(lastExitedStateString);
+            _stateHistory.Add(lastExitedStateString);
             if (_stateHistory.Count > _maxHistory)
             {
-                //_stateHistory.RemoveAt(0);
+                _stateHistory.RemoveAt(0);
             }
         }
 
