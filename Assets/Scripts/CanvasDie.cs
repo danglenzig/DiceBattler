@@ -17,14 +17,14 @@ namespace Dice
 
         private Vector3 _startPos;
 
-        private bool _isRolling;
+        //private bool _isRolling;
 
         private int _currentDieFaces = -1;
         private int _currentFaceIdx = -1;
 
         public event System.Action OnResultDecided;
 
-        public bool IsRolling { get { return _isRolling; } }
+        public bool IsRolling { get { return _spinner.IsRolling; } }
 
         private void Awake()
         {
@@ -58,7 +58,7 @@ namespace Dice
             string debStr = $"### {name}: Die started rolling.";
             Debug.Log(debStr);
 
-            _isRolling = true;
+            //_isRolling = true;
 
             PresentCurrentFace();
         }
@@ -81,7 +81,7 @@ namespace Dice
 
             PresentCurrentFace();
 
-            _isRolling = false;
+            //_isRolling = false;
 
             OnResultDecided?.Invoke();
         }
