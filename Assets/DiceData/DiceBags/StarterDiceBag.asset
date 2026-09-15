@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f27ea1aef772a91489a13220cd7c5672, type: 3}
+  m_Name: StarterDiceBag
+  m_EditorClassIdentifier: Assembly-CSharp::Dice.SO_DiceBag
+  _bagName: 
+  _dieList:
+  - {fileID: 11400000, guid: cd3267ae868f36f46b70db2e02ce1721, type: 2}
+  - {fileID: 11400000, guid: cd3267ae868f36f46b70db2e02ce1721, type: 2}
+  - {fileID: 11400000, guid: cd3267ae868f36f46b70db2e02ce1721, type: 2}
+  - {fileID: 11400000, guid: cd3267ae868f36f46b70db2e02ce1721, type: 2}
+  - {fileID: 11400000, guid: 5788f1e26079b404685ae9b8ee7f3489, type: 2}
+  - {fileID: 11400000, guid: 5788f1e26079b404685ae9b8ee7f3489, type: 2}
+  - {fileID: 11400000, guid: 5788f1e26079b404685ae9b8ee7f3489, type: 2}
+  - {fileID: 11400000, guid: 5788f1e26079b404685ae9b8ee7f3489, type: 2}
+  - {fileID: 11400000, guid: b9c68fcd5e544814596ef6d5d375e8fb, type: 2}
+  - {fileID: 11400000, guid: b9c68fcd5e544814596ef6d5d375e8fb, type: 2}
+  - {fileID: 11400000, guid: b9c68fcd5e544814596ef6d5d375e8fb, type: 2}

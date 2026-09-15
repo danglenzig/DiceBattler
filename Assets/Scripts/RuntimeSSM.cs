@@ -18,7 +18,7 @@ namespace SimpleStateMachine
         private List<string> _stateHistory = new List<string>();
 
         [HideInInspector] public SO_SimpleState CurrentState { get { return _currentState; } }
-        [HideInInspector] public List<string> StateHistoryStrings { get { return _stateHistory; } }
+        [HideInInspector] public IReadOnlyList<string> StateHistoryStrings { get { return _stateHistory; } }
 
         private void Awake()
         {

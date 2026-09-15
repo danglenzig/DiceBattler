@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class TestRig : MonoBehaviour
 {
+    /*
     [SerializeField] private SO_Die testDieData;
     [SerializeField] private CanvasDie testCanvasDie;
 
@@ -32,4 +33,5 @@ public class TestRig : MonoBehaviour
         _testButton.interactable = false;
         testCanvasDie.Roll();
     }
+    */
 }

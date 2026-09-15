@@ -23,10 +23,13 @@ public class DieTester : MonoBehaviour
 
     private void Awake()
     {
-        _canvasDieA.SetDiceData(_dieDataA);
-        _canvasDieB.SetDiceData(_dieDataB);
-        _canvasDieC.SetDiceData(_dieDataC);
-        
+        //_canvasDieA.SetDiceData(_dieDataA);
+        //_canvasDieB.SetDiceData(_dieDataB);
+        //_canvasDieC.SetDiceData(_dieDataC);
+        _canvasDieA.SetRuntimeDieData(_dieDataA.GetRuntimeDie());
+        _canvasDieB.SetRuntimeDieData(_dieDataB.GetRuntimeDie());
+        _canvasDieC.SetRuntimeDieData(_dieDataC.GetRuntimeDie());
+
     }
 
     private void OnEnable()
@@ -77,13 +80,18 @@ public class DieTester : MonoBehaviour
         int attackTotal = 0;
         int evasionTotal = 0;
 
-        SO_DieFace aFaceData = _canvasDieA.GetCurrentFaceData();
-        SO_DieFace bFaceData = _canvasDieB.GetCurrentFaceData();
-        SO_DieFace cFaceData = _canvasDieC.GetCurrentFaceData();
+        //SO_DieFace aFaceData = _canvasDieA.GetCurrentFaceData();
+        //SO_DieFace bFaceData = _canvasDieB.GetCurrentFaceData();
+        //SO_DieFace cFaceData = _canvasDieC.GetCurrentFaceData();
 
-        List<SO_DieFace> datas = new List<SO_DieFace>() { aFaceData, bFaceData, cFaceData };
+        RuntimeDieFace aFaceData = _canvasDieA.GetCurrentRuntimeDieFace();
+        RuntimeDieFace bFaceData = _canvasDieB.GetCurrentRuntimeDieFace();
+        RuntimeDieFace cFaceData = _canvasDieC.GetCurrentRuntimeDieFace();
 
-        foreach (SO_DieFace data in datas)
+        //List<SO_DieFace> datas = new List<SO_DieFace>() { aFaceData, bFaceData, cFaceData };
+        List<RuntimeDieFace> datas = new List<RuntimeDieFace>() { aFaceData, bFaceData, cFaceData};
+
+        foreach (RuntimeDieFace data in datas)
         {
             if (TagStringTools.IsAMatch("ACTION.ATTACK", data.TagStrings[0]))
             {
@@ -102,10 +110,6 @@ public class DieTester : MonoBehaviour
         _resultText.text = resultString;
 
         Debug.Log($"### {name}: {resultString}");
-        
-        
-
-
     }
 
 }
