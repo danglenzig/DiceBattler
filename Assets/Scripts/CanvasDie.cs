@@ -24,6 +24,8 @@ namespace Dice
 
         public bool IsRolling { get { return _spinner.IsRolling; } }
 
+        public RuntimeDie CurrentDieData {  get { return _currentDieData; } }
+
         private void Awake()
         {
             _startPos = GetComponent<RectTransform>().position;

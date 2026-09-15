@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Dice
 {
@@ -128,6 +129,7 @@ namespace Dice
         }
     }
 
+    /*
     public interface IResolverRules
     {
         TurnResolution GetOutcome(
@@ -135,6 +137,7 @@ namespace Dice
             CombatantData player,
             CombatantData opponent);
     }
+    */
 
     // Various implementations of IResolverRules defined in their own scripts...
 
@@ -156,6 +159,11 @@ namespace Dice
                 rollResult,
                 player,
                 opponent);
+        }
+
+        public string SayHello()
+        {
+            return $"Combat resolver says hi!\n{_rules.SayHello()}";
         }
     }
 }
