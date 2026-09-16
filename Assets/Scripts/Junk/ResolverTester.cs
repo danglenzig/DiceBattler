@@ -9,12 +9,14 @@ namespace Junk
         [SerializeField] private TurnTableau _tableau;
         [SerializeField] private Button _rollButton;
 
-        private CombatResolver _resolver;
+        TestRules _rules = new TestRules();
+ 
+        //private CombatResolver _resolver;
 
         private void Awake()
         {
             TestRules rules = new TestRules();
-            _resolver = new CombatResolver(rules);
+            //_resolver = new CombatResolver(rules);
         }
 
         private void OnEnable()
@@ -33,6 +35,7 @@ namespace Junk
             Combatant player = new Combatant();
             Combatant opponent = new Combatant();
             _tableau.SetCombatants(player, opponent);
+            _tableau.SetResolver(_rules);
         }
 
         private void HandleOnRollPressed()

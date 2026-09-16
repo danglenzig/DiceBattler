@@ -15,6 +15,8 @@ namespace Dice
 
         public CombatantData Data { get { return _data; } }
 
+        
+
         public void SetData(CombatantData inData)
         {
             _data = inData;
@@ -35,6 +37,12 @@ namespace Dice
 
         private Combatant _player;
         private Combatant _opponent;
+
+        //private IResolverRules _rules;
+
+        private CombatResolver _resolver;
+
+        public event System.Action<TurnResolution> OnRollingFinished;
 
         public bool IsRolling
         {
@@ -103,7 +111,20 @@ namespace Dice
                 if (d.IsRolling) return;
             }
 
-            Debug.Log($"### {name}: All dice have stopped rolling");
+
+            Debug.Log($"### {name}: Dice stopped rolling");
+
+            //==========
+            // BOOKMARK
+            //==========
+
+            // get a TurnResolution from _resolver.Resolve()
+            //TurnResolution res = ...
+
+            // pop off an event with information (?)
+            //OnRollingFinished?.Invoke(turnRes);
+            
+
 
         }
 
@@ -142,6 +163,34 @@ namespace Dice
 
         }
 
+        
+        private TurnData GetTurnData()
+        {
+            TurnData turnData = new TurnData();
+            RollResult rollResult = new RollResult();
+
+            CombatantData playerData = _player.Data;
+            CombatantData opponentData = _opponent.Data;
+
+            List<DieFaceResult> playerDiceResults = new List<DieFaceResult>();
+            List<DieFaceResult> opponentDiceResults = new List<DieFaceResult>();
+
+            // iterate through the player dice and create a DieFaceResult for each one
+            // add each one to playerDiceResults
+
+            // iterate through the opponent dice and create a DieFaceResult for each one
+            // add each one to opponentDiceResults
+
+            rollResult.SetPlayerRoll(playerDiceResults);
+            rollResult.SetOpponentRoll(opponentDiceResults);
+
+            turnData.SetTheRollResult(rollResult);
+            turnData.SetCombatantData(playerData, opponentData);
+
+            return turnData;
+        }
+        
+
         //=====
         // API
         //=====
@@ -150,6 +199,11 @@ namespace Dice
         {
             _player = player;
             _opponent = opponent;
+        }
+
+        public void SetResolver(IResolverRules rules)
+        {
+            _resolver = new CombatResolver(rules);
         }
 
         public void Roll()
@@ -172,8 +226,6 @@ namespace Dice
                     d.Roll();
                 }
             }
-
-
         }
     }
 }
