@@ -13,12 +13,18 @@ namespace Dice
     {
         private Spinner _spinner;
         private Image _image;
-        private SO_Die _currentDieData = null;
+        private RuntimeDie _currentDieData = null;
 
         private Vector3 _startPos;
 
         private int _currentDieFaces = -1;
         private int _currentFaceIdx = -1;
+
+        public event System.Action OnResultDecided;
+
+        public bool IsRolling { get { return _spinner.IsRolling; } }
+
+        public RuntimeDie CurrentDieData {  get { return _currentDieData; } }
 
         private void Awake()
         {
@@ -43,7 +49,7 @@ namespace Dice
 
         private void Start()
         {
-
+            PresentCurrentFace();
         }
 
 
@@ -56,7 +62,7 @@ namespace Dice
         }
         private void HandleDieUpdate()
         {
-            List<int> adjacentFaceIndexes = DiceTools.GetAdjacentFaceIndexes(_currentFaceIdx, _currentDieData.DeeType);
+            IReadOnlyList<int> adjacentFaceIndexes = DiceTools.GetAdjacentFaceIndexes(_currentFaceIdx, _currentDieData.DeeType);
             int rando = UnityRandom.Range(0, adjacentFaceIndexes.Count);
             _currentFaceIdx = adjacentFaceIndexes[rando];
 
@@ -72,19 +78,21 @@ namespace Dice
             Debug.Log(debStr);
 
             PresentCurrentFace();
+
+            OnResultDecided?.Invoke();
         }
 
         private void PresentCurrentFace()
         {
             if (_currentDieData == null) return;
 
-            SO_DieFace faceData = _currentDieData.FaceSOs[_currentFaceIdx];
+            RuntimeDieFace faceData = _currentDieData.Faces[_currentFaceIdx];
+
             int val = faceData.IntegerValue;
 
             Debug.Log($"### {name}: Current face value {val}, Tags: {string.Join(",", faceData.TagStrings)}");
 
-            Texture2D faceTexture = faceData.GetSpriteTexture();
-            if (faceTexture != null)
+            if (faceData.ImageSprite != null)
             {
                 _image.sprite = faceData.ImageSprite;
             }
@@ -109,11 +117,16 @@ namespace Dice
         // API
         //=====
 
-        public void SetDiceData(SO_Die dieData)
+        public RuntimeDieFace GetCurrentRuntimeDieFace()
+        {
+            return _currentDieData.Faces[_currentFaceIdx];
+        }
+
+        public void SetRuntimeDieData(RuntimeDie dieData)
         {
             _currentDieData= dieData;
-            _currentDieFaces = DiceTools.NumFaces(_currentDieData.DeeType);
-            _currentFaceIdx = 0;
+            _currentDieFaces = DiceTools.NumFaces( dieData.DeeType );
+            _currentFaceIdx= 0;
         }
 
         public void Roll()

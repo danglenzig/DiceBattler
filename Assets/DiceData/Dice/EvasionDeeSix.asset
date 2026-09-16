@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c2cc22ec0f6f2947a52a45ec18122be, type: 3}
+  m_Name: EvasionDeeSix
+  m_EditorClassIdentifier: Assembly-CSharp::Dice.SO_Die
+  _dieName: EvasionDeeSix_00
+  _deeType: 2
+  _faces:
+  - {fileID: 11400000, guid: 22adcb74951db464ca448b0253b2f063, type: 2}
+  - {fileID: 11400000, guid: bcc60d4e9bf981a4aadebef5bcef2720, type: 2}
+  - {fileID: 11400000, guid: 5805d59148d37d7418c753800e6c051a, type: 2}
+  - {fileID: 11400000, guid: 8d38816ba5c2a3644b00f49a8d9e70cd, type: 2}
+  - {fileID: 11400000, guid: 457e72a430419f341886ce6265b6e109, type: 2}
+  - {fileID: 11400000, guid: ddd7898762885f44abbcba81f14a8465, type: 2}
+  _tagStrings: []

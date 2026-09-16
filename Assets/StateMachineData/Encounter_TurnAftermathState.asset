@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e5eac147a49ec408004c7d3e9bc60b, type: 3}
+  m_Name: Encounter_TurnAftermathState
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleStateMachine.SO_SimpleState
+  _stateString: TURN_AFTERMATH_STATE
+  _stateDescription: '- Turn results are displayed on screen
+
+    - Update UI
+
+    -
+    Sprite animations
+
+    - If player HP <= 0 -> player die
+
+    - If opponent HP
+    <= 0 -> player win
+
+    - Otherwise, return to draw up'
+  _toStates:
+  - {fileID: 11400000, guid: 4caf4777cd60e404dbbc08f2bacb81de, type: 2}
+  - {fileID: 11400000, guid: 77013b58670487f429e9ded93de340cc, type: 2}
+  - {fileID: 11400000, guid: 1991eccf6d8c8e049b8ce38ab0ec18ac, type: 2}
+  StateString: 
+  ToStates: []

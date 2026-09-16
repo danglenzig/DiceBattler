@@ -17,6 +17,11 @@ namespace Dice
         {
             return _imageSprite.texture;
         }
+        public RuntimeDieFace GetRuntimeDieFace()
+        {
+            return new RuntimeDieFace(_integerValue, _tagStrings, _imageSprite);
+        }
+
     }
 }
 

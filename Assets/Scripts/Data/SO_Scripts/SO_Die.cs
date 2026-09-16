@@ -51,6 +51,17 @@ namespace Dice
 
         }
 
+        public RuntimeDie GetRuntimeDie()
+        {
+            List<RuntimeDieFace> runtimeFaces = new();
+            foreach (SO_DieFace face in _faces)
+            {
+                runtimeFaces.Add(face.GetRuntimeDieFace());
+            }
+
+            return new RuntimeDie(_dieName, _deeType, runtimeFaces, _tagStrings);
+        }
+
     }
 }
 

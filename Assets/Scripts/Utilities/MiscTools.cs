@@ -64,9 +64,9 @@ namespace MiscTools
             }
         }
 
-        public static List<int> GetAdjacentFaceIndexes(int currentFaceIndex, DieType deeType)
+        public static IReadOnlyList<int> GetAdjacentFaceIndexes(int currentFaceIndex, DieType deeType)
         {
-            List<List<int>> deeSixAdjacentFaces = new List<List<int>>()
+            IReadOnlyList<List<int>> deeSixAdjacentFaces = new List<List<int>>()
             {
                 new List<int> { 1,2,3,4 }, // 0
                 new List<int> { 0,2,3,5 }, // 1
