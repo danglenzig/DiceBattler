@@ -25,6 +25,10 @@ namespace Dice
 
     public class TurnTableau : MonoBehaviour
     {
+
+        private const string ATTACK_TAG = "ACTION.ATTACK";
+        private const string EVASION_TAG = "ACTION.EVASION";
+
         [SerializeField] private List<CanvasDie> _playerDice;
         [SerializeField] private List<CanvasDie> _opponentDice;
         [SerializeField] private TMP_Text _playerResultText;
@@ -34,6 +38,7 @@ namespace Dice
         [SerializeField] private List<SO_Die> _defaultOpponentDiceSOs;
 
         [SerializeField] private bool _useDefaultDiceSOs = true;
+
 
         private Combatant _player;
         private Combatant _opponent;
@@ -111,21 +116,85 @@ namespace Dice
                 if (d.IsRolling) return;
             }
 
+            List<DieFaceResult> playerDiceResults = new List<DieFaceResult>();
+            List<DieFaceResult> opponentDiceResults = new List<DieFaceResult>();
 
-            Debug.Log($"### {name}: Dice stopped rolling");
+            int playerAttackTotal = 0;
+            int playerEvasionTotal = 0;
+            int opponentAttackTotal = 0;
+            int opponentEvasionTotal = 0;
 
-            //==========
-            // BOOKMARK
-            //==========
+            foreach (CanvasDie d in _playerDice)
+            {
+                RuntimeDieFace thisFace = d.GetCurrentRuntimeDieFace();
+                int intValue = thisFace.IntegerValue;
+                List<string> tags = thisFace.TagStrings;
+                DieFaceResult thisResult = new DieFaceResult();
+                thisResult.SetIntegerValue(intValue);
+                thisResult.SetTagStrings(tags);
+                playerDiceResults.Add(thisResult);
 
-            // get a TurnResolution from _resolver.Resolve()
-            //TurnResolution res = ...
+                //DebugDieFaceResult("Player", thisResult);
 
-            // pop off an event with information (?)
-            //OnRollingFinished?.Invoke(turnRes);
-            
+                if (TagStringTools.IsAMatch(tags[0], ATTACK_TAG))
+                {
+                    playerAttackTotal += intValue;
+                }
+                if (TagStringTools.IsAMatch(tags[0], EVASION_TAG))
+                {
+                    playerEvasionTotal += intValue;
+                }
 
+            }
 
+            foreach (CanvasDie d in _opponentDice)
+            {
+                RuntimeDieFace thisFace = d.GetCurrentRuntimeDieFace();
+                int intValue = thisFace.IntegerValue;
+                List<string> tags = thisFace.TagStrings;
+                DieFaceResult thisResult = new DieFaceResult();
+                thisResult.SetIntegerValue(intValue);
+                thisResult.SetTagStrings(tags);
+
+                //DebugDieFaceResult("Opponent", thisResult);
+
+                if (TagStringTools.IsAMatch(tags[0], ATTACK_TAG))
+                {
+                    opponentAttackTotal += intValue;
+                }
+                if (TagStringTools.IsAMatch(tags[0], EVASION_TAG))
+                {
+                    opponentEvasionTotal += intValue;
+                }
+
+                opponentDiceResults.Add(thisResult);
+            }
+
+            PresentRollResult(_playerResultText, playerAttackTotal, playerEvasionTotal);
+            PresentRollResult(_opponentResultText, opponentAttackTotal, opponentEvasionTotal);
+
+            RollResult turnResult = new RollResult();
+            turnResult.SetPlayerRoll(playerDiceResults);
+            turnResult.SetOpponentRoll(opponentDiceResults);
+
+            TurnResolution res = _resolver.Resolve(turnResult, _player.Data, _opponent.Data);
+            OnRollingFinished?.Invoke(res);
+
+            //Debug.Log($"### {name}: Dice stopped rolling");
+        }
+
+        private void PresentRollResult(TMP_Text resultText, int attackTotal, int evasionTotal)
+        {
+            if (resultText == null) return;
+            string resultStr = $"Attack Power: {attackTotal.ToString()}\nTotal Evasion: {evasionTotal}";
+            resultText.text = resultStr;
+        }
+
+        private void DebugDieFaceResult(string combatantName, DieFaceResult res)
+        {
+            string tagsStr = string.Join(",", res.TagStrings);
+            string debStr = $"{combatantName}:\n  {res.TagStrings[0]}\n  {res.IntegerValue.ToString()}";
+            Debug.Log($"### {name}: {debStr}");
         }
 
         private bool GetIsRolling()
@@ -210,7 +279,7 @@ namespace Dice
         {
             if (GetIsRolling()) return;
 
-            Debug.Log($"### {name}: Tryna' roll...");
+            //Debug.Log($"### {name}: Tryna' roll...");
 
             foreach (CanvasDie d in _playerDice)
             {

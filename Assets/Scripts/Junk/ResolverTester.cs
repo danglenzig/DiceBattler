@@ -22,10 +22,12 @@ namespace Junk
         private void OnEnable()
         {
             _rollButton.onClick.AddListener(HandleOnRollPressed);
+            _tableau.OnRollingFinished += HandleOnRollingFinished;
         }
         private void OnDisable()
         {
             _rollButton.onClick.RemoveAllListeners();
+            _tableau.OnRollingFinished -= HandleOnRollingFinished;
         }
 
         void Start()
@@ -44,11 +46,20 @@ namespace Junk
             _tableau.Roll();
         }
 
-        /*
-        void Update()
+        private void HandleOnRollingFinished(TurnResolution res)
         {
+            CombatantEffects playerEffects = res.PlayerEffects;
+            CombatantEffects opponentEffects = res.OpponentEffects;
+
+            string playerRes = $"Player HP adjustment: {playerEffects.HPChange.ToString()}";
+            string opponentRes = $"Opponent HP adjustment: {opponentEffects.HPChange.ToString()}";
+
+            Debug.Log($"### {name}: {playerRes}");
+            Debug.Log($"### {name}: {opponentRes}");
+
+
+
 
         }
-        */
     }
 }
