@@ -43,7 +43,7 @@ namespace MiscTools
     {
         public static bool IsAMatch(string tagStringToTest, string tagStringToMatch)
         {
-            return tagStringToMatch.StartsWith(tagStringToTest);
+            return tagStringToTest.StartsWith(tagStringToMatch);
         } 
     }
 

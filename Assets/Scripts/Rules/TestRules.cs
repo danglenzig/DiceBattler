@@ -81,13 +81,13 @@ namespace Dice
                 {
                     if (MiscTools.TagStringTools.IsAMatch(tagStr, ATTACK_TAG))
                     {
-                        Debug.Log($"### TestRules: Adding {result.IntegerValue} to player attack");
+                        //Debug.Log($"### TestRules: Adding {result.IntegerValue} to player attack");
                         playerAttackTotal += result.IntegerValue;
                         break;
                     }
                     if (MiscTools.TagStringTools.IsAMatch(tagStr, EVASION_TAG))
                     {
-                        Debug.Log($"### TestRules: Adding {result.IntegerValue} to player evasion");
+                        //Debug.Log($"### TestRules: Adding {result.IntegerValue} to player evasion");
                         playerEvasionTotal += result.IntegerValue;
                         break;
                     }
@@ -101,13 +101,13 @@ namespace Dice
                 {
                     if (MiscTools.TagStringTools.IsAMatch(tagStr, ATTACK_TAG))
                     {
-                        Debug.Log($"### TestRules: Adding {result.IntegerValue} to opponent attack");
+                        //Debug.Log($"### TestRules: Adding {result.IntegerValue} to opponent attack");
                         opponentAttackTotal += result.IntegerValue;
                         break;
                     }
                     if (MiscTools.TagStringTools.IsAMatch(tagStr, EVASION_TAG))
                     {
-                        Debug.Log($"### TestRules: Adding {result.IntegerValue} to opponent evasion");
+                        //Debug.Log($"### TestRules: Adding {result.IntegerValue} to opponent evasion");
                         opponentEvasionTotal += result.IntegerValue;
                         break;
                     }

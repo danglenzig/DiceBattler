@@ -56,7 +56,7 @@ namespace Dice
         private void HandleDieStartRolling()
         {
             string debStr = $"### {name}: Die started rolling.";
-            Debug.Log(debStr);
+            //Debug.Log(debStr);
 
             PresentCurrentFace();
         }
@@ -75,7 +75,7 @@ namespace Dice
             if (_currentDieData == null) return;
             string debStr = $"### {name}: Die stopped rolling.";
 
-            Debug.Log(debStr);
+            //Debug.Log(debStr);
 
             PresentCurrentFace();
 
@@ -90,7 +90,7 @@ namespace Dice
 
             int val = faceData.IntegerValue;
 
-            Debug.Log($"### {name}: Current face value {val}, Tags: {string.Join(",", faceData.TagStrings)}");
+            //Debug.Log($"### {name}: Current face value {val}, Tags: {string.Join(",", faceData.TagStrings)}");
 
             if (faceData.ImageSprite != null)
             {
