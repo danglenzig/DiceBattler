@@ -9,8 +9,6 @@ namespace SimpleStateMachine
     public class RuntimeSSM : MonoBehaviour
     {
         [SerializeField] private SO_SimpleStateMachine _stateMachineData;
-        [SerializeField] private SO_EventStringPayload _simpleStateEnteredEvent;
-        [SerializeField] private SO_EventStringPayload _simpleStateExitedEvent;
 
         [SerializeField] private int _maxHistory = 50;
 
@@ -19,6 +17,10 @@ namespace SimpleStateMachine
 
         [HideInInspector] public SO_SimpleState CurrentState { get { return _currentState; } }
         [HideInInspector] public IReadOnlyList<string> StateHistoryStrings { get { return _stateHistory; } }
+
+        public event System.Action<string> StateEntered;
+        public event System.Action<string> StateExited;
+
 
         private void Awake()
         {
@@ -69,10 +71,10 @@ namespace SimpleStateMachine
                 if (state.StateString == toStateString)
                 {
                     FixStateHistory(_currentState.StateString);
-                    _simpleStateExitedEvent.TriggerEvent(_currentState.StateString);
+                    StateExited?.Invoke(_currentState.StateString);
 
                     _currentState = state;
-                    _simpleStateEnteredEvent.TriggerEvent(_currentState.StateString);
+                    StateEntered?.Invoke(_currentState.StateString);
 
                     return true;
                 }

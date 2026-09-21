@@ -51,6 +51,8 @@ namespace Junk
 
         private void HandleOnRollPressed()
         {
+            if (!_tableau.ReadyToRoll()) return;
+
             _rollButton.interactable = false;
             _tableau.Roll();
         }
