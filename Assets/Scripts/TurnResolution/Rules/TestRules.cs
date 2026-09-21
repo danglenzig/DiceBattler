@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace Dice
 {
-    public class TestRules : IResolverRules
+    public sealed class TestRules : IResolverRules
     {
 
         private const string ATTACK_TAG = "ACTION.ATTACK";
         private const string EVASION_TAG = "ACTION.EVASION";
         private const string DEAD_TAG = "STATUS_EFFECT.DEAD";
 
-        private const int ATTACK_DAMAGE = -1;
+        private const int ATTACK_DAMAGE = -6;
 
 
         // IResolverRules implementation...
@@ -22,16 +22,17 @@ namespace Dice
             return "Test rules says hi!";
         }
 
-        public TurnResolution GetOutcome(
-            RollResult rollResult,
-            CombatantData player,
-            CombatantData opponent)
+        public TurnResolution GetTableauResolution(TableauResult tableauResult)
         {
+            RollResult rollResult = tableauResult.RollResult;
+            CombatantData playerData = tableauResult.PlayerData;
+            CombatantData opponentData = tableauResult.OpponentData;
+
             IReadOnlyList<DieFaceResult> playerRoll = rollResult.PlayerRoll;
             IReadOnlyList<DieFaceResult> opponentRoll = rollResult.OpponentRoll;
 
-            int playerHP = player.HP;
-            int opponentHP = opponent.HP;
+            int playerHP = playerData.HP;
+            int opponentHP = opponentData.HP;
 
             List<StatusEffect> playerStatusEffectsAddedThisTurn = new();
             List<StatusEffect> playerStatusEffectsRemovedThisTurn = new();
@@ -45,33 +46,6 @@ namespace Dice
 
             int playerDamageThisTurn = 0;
             int opponentDamageThisTurn = 0;
-
-            //========================================
-            // Keep this here for pattern reference...
-            // Remove it when implemented elsewhere
-            //========================================
-
-            // decrement the duration for any temporary status effects
-            // "reverse for loop" pattern is a safe way to remove items
-            // from a list while iteration through it
-
-            // Actually, let's maybe just not do this here...
-            /*
-            for (int i = playerStatusEffects.Count - 1; i >= 0; i--)
-            {
-                StatusEffect effect = playerStatusEffects[i];
-
-                if (effect.Duration > 1)
-                {
-                    effect.SetDuration(effect.Duration - 1);
-                }
-                else
-                {
-                    playerStatusEffects.RemoveAt(i);
-                }
-            }
-            */
-
 
 
             // add up the player attack and evasion values
@@ -119,7 +93,7 @@ namespace Dice
             if (playerAttackTotal >= opponentEvasionTotal) // will otherwise remain 0
             {
                 opponentDamageThisTurn = ATTACK_DAMAGE;
-                if (opponent.HP + ATTACK_DAMAGE <= 0)
+                if (opponentData.HP + ATTACK_DAMAGE <= 0)
                 {
                     StatusEffect opponentDeadStatus = new StatusEffect();
                     opponentDeadStatus.SetDuration(-1);
@@ -132,7 +106,7 @@ namespace Dice
             if (opponentAttackTotal >= playerEvasionTotal) // otherwise will remain 0
             {
                 playerDamageThisTurn = ATTACK_DAMAGE;
-                if (player.HP + ATTACK_DAMAGE <= 0)
+                if (playerData.HP + ATTACK_DAMAGE <= 0)
                 {
                     StatusEffect playerDeadStatus = new StatusEffect();
                     playerDeadStatus.SetDuration(-1);
@@ -141,25 +115,26 @@ namespace Dice
                 }
             }
 
-            // TODO: figure out where is the best place to handle decrementing the effects durations.
-            // for now, just fuck it...
+            // NOTE, in this ruleset, we're not removing any status effects,
+            // so ...StatusEffectsRemovedThisNurn is just an empty list
 
             // package up the HP change and added/removes status effects for the player
             CombatantEffects playerTurnEffects = new CombatantEffects();
             playerTurnEffects.SetHPChange(playerDamageThisTurn);
             playerTurnEffects.SetAddedStatusEffects(playerStatusEffectsAddedThisTurn);
+            playerTurnEffects.SetRemovedStatusEffects(playerStatusEffectsRemovedThisTurn);
 
             // package up the HP change and added/removes status effects for the opponent
             CombatantEffects opponentTurnEffects = new CombatantEffects();
             opponentTurnEffects.SetHPChange(opponentDamageThisTurn);
-            opponentTurnEffects.SetAddedStatusEffects(playerStatusEffectsAddedThisTurn);
+            opponentTurnEffects.SetAddedStatusEffects(opponentStatusEffectsAddedThisTurn);
+            opponentTurnEffects.SetRemovedStatusEffects(opponentStatusEffectsRemovedThisTurn);
 
             // package and return the turn outcome...
             TurnResolution res = new TurnResolution();
             res.SetPlayerEffects(playerTurnEffects);
             res.SetOpponentEffects(opponentTurnEffects);
             return res;
-
         }
     }
 }

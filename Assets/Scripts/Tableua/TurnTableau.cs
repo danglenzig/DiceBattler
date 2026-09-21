@@ -9,20 +9,6 @@ using UnityEngine.Rendering;
 namespace Dice
 {
 
-    public class Combatant
-    {
-        private CombatantData _data = new CombatantData();
-
-        public CombatantData Data { get { return _data; } }
-
-        
-
-        public void SetData(CombatantData inData)
-        {
-            _data = inData;
-        }
-    }
-
     public class TurnTableau : MonoBehaviour
     {
 
@@ -38,16 +24,9 @@ namespace Dice
         [SerializeField] private List<SO_Die> _defaultOpponentDiceSOs;
 
         [SerializeField] private bool _useDefaultDiceSOs = true;
-
-
-        private Combatant _player;
-        private Combatant _opponent;
-
-        //private IResolverRules _rules;
-
-        private CombatResolver _resolver;
-
-        public event System.Action<TurnResolution> OnRollingFinished;
+        private CombatantData _playerData;
+        private CombatantData _opponentData;
+        public event System.Action<TableauResult> OnTableauResultAnnounced;
 
         public bool IsRolling
         {
@@ -59,9 +38,6 @@ namespace Dice
 
         private void OnEnable()
         {
-
-            
-
             foreach (CanvasDie d in _playerDice)
             {
                 d.OnResultDecided += HandleOnDieStoppedRolling;
@@ -83,8 +59,6 @@ namespace Dice
                 d.OnResultDecided -= HandleOnDieStoppedRolling;
             }
         }
-
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
             if (_useDefaultDiceSOs)
@@ -96,15 +70,9 @@ namespace Dice
 
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         private void HandleOnDieStoppedRolling()
         {
-            if (_player == null || _opponent == null) return;
+            if (_playerData == null || _opponentData == null) return;
 
             // return early if any dice are still rolling
             foreach (CanvasDie d in _playerDice)
@@ -170,31 +138,12 @@ namespace Dice
                 opponentDiceResults.Add(thisResult);
             }
 
-            PresentRollResult(_playerResultText, playerAttackTotal, playerEvasionTotal);
-            PresentRollResult(_opponentResultText, opponentAttackTotal, opponentEvasionTotal);
+            RollResult rollResult = new RollResult();
+            rollResult.SetPlayerRoll(playerDiceResults);
+            rollResult.SetOpponentRoll(opponentDiceResults);
 
-            RollResult turnResult = new RollResult();
-            turnResult.SetPlayerRoll(playerDiceResults);
-            turnResult.SetOpponentRoll(opponentDiceResults);
-
-            TurnResolution res = _resolver.Resolve(turnResult, _player.Data, _opponent.Data);
-            OnRollingFinished?.Invoke(res);
-
-            //Debug.Log($"### {name}: Dice stopped rolling");
-        }
-
-        private void PresentRollResult(TMP_Text resultText, int attackTotal, int evasionTotal)
-        {
-            if (resultText == null) return;
-            string resultStr = $"Attack Power: {attackTotal.ToString()}\nTotal Evasion: {evasionTotal}";
-            resultText.text = resultStr;
-        }
-
-        private void DebugDieFaceResult(string combatantName, DieFaceResult res)
-        {
-            string tagsStr = string.Join(",", res.TagStrings);
-            string debStr = $"{combatantName}:\n  {res.TagStrings[0]}\n  {res.IntegerValue.ToString()}";
-            Debug.Log($"### {name}: {debStr}");
+            TableauResult tableauResult = new TableauResult(rollResult, _playerData, _opponentData);
+            OnTableauResultAnnounced?.Invoke(tableauResult);
         }
 
         private bool GetIsRolling()
@@ -229,34 +178,6 @@ namespace Dice
             {
                 _opponentDice[i].SetRuntimeDieData(_defaultOpponentDiceSOs[i].GetRuntimeDie());
             }
-
-        }
-
-        
-        private TurnData GetTurnData()
-        {
-            TurnData turnData = new TurnData();
-            RollResult rollResult = new RollResult();
-
-            CombatantData playerData = _player.Data;
-            CombatantData opponentData = _opponent.Data;
-
-            List<DieFaceResult> playerDiceResults = new List<DieFaceResult>();
-            List<DieFaceResult> opponentDiceResults = new List<DieFaceResult>();
-
-            // iterate through the player dice and create a DieFaceResult for each one
-            // add each one to playerDiceResults
-
-            // iterate through the opponent dice and create a DieFaceResult for each one
-            // add each one to opponentDiceResults
-
-            rollResult.SetPlayerRoll(playerDiceResults);
-            rollResult.SetOpponentRoll(opponentDiceResults);
-
-            turnData.SetTheRollResult(rollResult);
-            turnData.SetCombatantData(playerData, opponentData);
-
-            return turnData;
         }
         
 
@@ -264,22 +185,15 @@ namespace Dice
         // API
         //=====
 
-        public void SetCombatants(Combatant player, Combatant opponent)
+        public void SetCombatants(CombatantData playerData, CombatantData opponentData)
         {
-            _player = player;
-            _opponent = opponent;
-        }
-
-        public void SetResolver(IResolverRules rules)
-        {
-            _resolver = new CombatResolver(rules);
+            _playerData = playerData;
+            _opponentData = opponentData;
         }
 
         public void Roll()
         {
             if (GetIsRolling()) return;
-
-            //Debug.Log($"### {name}: Tryna' roll...");
 
             foreach (CanvasDie d in _playerDice)
             {
