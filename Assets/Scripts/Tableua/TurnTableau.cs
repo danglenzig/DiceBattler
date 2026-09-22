@@ -4,13 +4,29 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine;
+using SimpleStateMachine;
 
 namespace Dice
 {
-    public class TurnTableau : MonoBehaviour
+    public interface ITableau
     {
-        private const string ATTACK_TAG = "ACTION.ATTACK";
-        private const string EVASION_TAG = "ACTION.EVASION";
+        public void SetPlayerDice(List<RuntimeDie> diceDatas);
+        public void SetOpponentDice(List<RuntimeDie> diceDatas);
+        public bool ReadyToRoll();
+        public void SetCombatants(CombatantData playerData, CombatantData opponentData);
+        public void Roll();
+
+        public void EncounterStart(RuntimeSSM stateMachine, string nextStateString);
+
+        public event System.Action<TableauResult> OnTableauResultAnnounced;
+    }
+
+
+    public class TurnTableau : MonoBehaviour, ITableau
+    {
+
+        //private const string ATTACK_TAG = "ACTION.ATTACK";
+        //private const string EVASION_TAG = "ACTION.EVASION";
 
         [SerializeField] private List<CanvasDie> _playerCanvasDice;
         [SerializeField] private List<CanvasDie> _opponentCanvasDice;
@@ -103,11 +119,11 @@ namespace Dice
 
                 //DebugDieFaceResult("Player", thisResult);
 
-                if (TagStringTools.IsAMatch(tags[0], ATTACK_TAG))
+                if (TagStringTools.IsAMatch(tags[0], ActionTagStrings.ATTACK))
                 {
                     playerAttackTotal += intValue;
                 }
-                if (TagStringTools.IsAMatch(tags[0], EVASION_TAG))
+                if (TagStringTools.IsAMatch(tags[0], ActionTagStrings.EVASION))
                 {
                     playerEvasionTotal += intValue;
                 }
@@ -125,11 +141,11 @@ namespace Dice
 
                 //DebugDieFaceResult("Opponent", thisResult);
 
-                if (TagStringTools.IsAMatch(tags[0], ATTACK_TAG))
+                if (TagStringTools.IsAMatch(tags[0], ActionTagStrings.ATTACK))
                 {
                     opponentAttackTotal += intValue;
                 }
-                if (TagStringTools.IsAMatch(tags[0], EVASION_TAG))
+                if (TagStringTools.IsAMatch(tags[0], ActionTagStrings.EVASION))
                 {
                     opponentEvasionTotal += intValue;
                 }
@@ -221,7 +237,6 @@ namespace Dice
             {
                 if (d.CurrentDieData == null) return false;
             }
-
             return true;
         }
 
@@ -249,6 +264,19 @@ namespace Dice
                     d.Roll();
                 }
             }
+        }
+
+        public void EncounterStart(RuntimeSSM stateMachine, string nextStateString)
+        {
+            // do enconter start stuff;
+            // - Set up the player draw bag
+            // set up the opponent draw bag
+
+            if (!stateMachine.TryTakeTransition(nextStateString))
+            {
+                // throw an error
+            }
+            return;
         }
     }
 }

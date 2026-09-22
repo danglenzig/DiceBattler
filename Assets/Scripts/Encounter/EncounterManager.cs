@@ -5,29 +5,22 @@ using System.Collections.Generic;
 
 namespace Dice
 {
+
     [RequireComponent(typeof(RuntimeSSM))]
     [RequireComponent(typeof(TurnTableau))]
     public sealed class EncounterManager : MonoBehaviour
     {
-        private const string SETUP_STATE = "ENCOUNTER_SETUP";
-        private const string DRAWUP_STATE = "TURN_DRAW_UP";
-        private const string SELECT_STATE = "TURN_SELECT_STATE";
-        private const string ROLLING_STATE = "TURN_ROLLING_STATE";
-        private const string RESOLUTION_STATE = "TURN_RESOLUTION_STATE";
-        private const string AFTERMATH_STATE = "TURN_AFTERMATH_STATE";
-        private const string PLAYER_DEAD_STATE = "ENCOUNTER_PLAYER_DEATH";
-        private const string PLAYER_WIN_STATE = "ENCOUNTER_PLAYER_WIN";
 
+        [SerializeField] private SO_DiceBag _defaultDiceBagData;
 
-        /*
-         NOTE: Look at ResolverTester.cs in another tab while you're making this one
-         */
-
-        private TurnTableau _tableau;
+        private ITableau _tableau;
 
         private RuntimeSSM _encounterStateMachine;
 
         private IResolverRules _rules;
+
+        CombatantData _playerData = new CombatantData();
+        CombatantData _opponentData = new CombatantData();
 
         private void OnValidate()
         {
@@ -38,7 +31,7 @@ namespace Dice
         {
             // state transition events
             _encounterStateMachine = GetComponent<RuntimeSSM>();
-            _tableau = GetComponent<TurnTableau>();
+            _tableau = GetComponent<ITableau>();
             _encounterStateMachine.StateEntered += HandleOnStateEntered;
             _encounterStateMachine.StateExited += HandleOnStateExited;
 
@@ -63,20 +56,39 @@ namespace Dice
 
         void Start()
         {
-
+            SetupTableau();
         }
-
-        /*
-        void Update()
-        {
-
-        }
-        */
 
         private void SetupTableau()
         {
+            string startingEffectTag = "STATUS_EFFECT.UNHARMED";
+            StatusEffect startingEffect = new StatusEffect();
+            startingEffect.SetEffectTag(startingEffectTag);
+            startingEffect.SetDuration(-1);
+
             // set up the tableau data...
             //_tableau.SetCombatants(...)
+            // for now, we're just creating them here.
+            // TODO: construct these from data...
+            _playerData = new CombatantData();
+            _playerData.SetCombatantName("Player Playerson");
+            _playerData.SetCombatantID("ABC123");
+            _playerData.SetHP(20);
+            _playerData.SetActiveStatusEffects(new List<StatusEffect>() { startingEffect });
+            _playerData.SetDrawBag(_defaultDiceBagData.GetRuntimeDiceBag());
+            _playerData.SetInHand(new RuntimeDiceBag());
+            _playerData.SetDiscardBag(new RuntimeDiceBag());
+
+            _opponentData = new CombatantData();
+            _opponentData.SetCombatantName("Bad guy");
+            _opponentData.SetCombatantID("DEF456");
+            _opponentData.SetHP(20);
+            _opponentData.SetActiveStatusEffects(new List<StatusEffect>() { startingEffect });
+            _opponentData.SetDrawBag(_defaultDiceBagData.GetRuntimeDiceBag());
+            _opponentData.SetInHand(new RuntimeDiceBag());
+            _opponentData.SetDiscardBag(new RuntimeDiceBag());
+
+            _tableau.SetCombatants(_playerData, _opponentData);
 
             // now tell the tableau to do its encounter start animations, etc
             // include a reference to the state machine, and a the DRAWUP_STATE
@@ -84,6 +96,7 @@ namespace Dice
             // method on the provided SM with the provided toState string.
             // We'll know it's fininished when we get the StateEntered event
             // with payload DRAWUP_STATE
+            _tableau.EncounterStart(_encounterStateMachine, EncounterStateStrings.DRAWUP_STATE);
 
         }
 
@@ -91,21 +104,24 @@ namespace Dice
         {
             switch (enteredStateString)
             {
-                case SETUP_STATE:
+                case EncounterStateStrings.SETUP_STATE:
                     return;
-                case DRAWUP_STATE:
+                case EncounterStateStrings.DRAWUP_STATE:
+
+                    
+
                     return;
-                case SELECT_STATE:
+                case EncounterStateStrings.SELECT_STATE:
                     return;
-                case ROLLING_STATE:
+                case EncounterStateStrings.ROLLING_STATE:
                     return;
-                case RESOLUTION_STATE:
+                case EncounterStateStrings.RESOLUTION_STATE:
                     return;
-                case AFTERMATH_STATE:
+                case EncounterStateStrings.AFTERMATH_STATE:
                     return;
-                case PLAYER_DEAD_STATE:
+                case EncounterStateStrings.PLAYER_DEAD_STATE:
                     return;
-                case PLAYER_WIN_STATE:
+                case EncounterStateStrings.PLAYER_WIN_STATE:
                     return;
                 default:
                     return;
@@ -115,21 +131,21 @@ namespace Dice
         {
             switch (exitedStateString)
             {
-                case SETUP_STATE:
+                case EncounterStateStrings.SETUP_STATE:
                     return;
-                case DRAWUP_STATE:
+                case EncounterStateStrings.DRAWUP_STATE:
                     return;
-                case SELECT_STATE:
+                case EncounterStateStrings.SELECT_STATE:
                     return;
-                case ROLLING_STATE:
+                case EncounterStateStrings.ROLLING_STATE:
                     return;
-                case RESOLUTION_STATE:
+                case EncounterStateStrings.RESOLUTION_STATE:
                     return;
-                case AFTERMATH_STATE:
+                case EncounterStateStrings.AFTERMATH_STATE:
                     return;
-                case PLAYER_DEAD_STATE:
+                case EncounterStateStrings.PLAYER_DEAD_STATE:
                     return;
-                case PLAYER_WIN_STATE:
+                case EncounterStateStrings.PLAYER_WIN_STATE:
                     return;
                 default:
                     return;

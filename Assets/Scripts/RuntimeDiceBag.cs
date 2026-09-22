@@ -13,6 +13,13 @@ namespace Dice
         public List<RuntimeDie> DieList { get { return _dieList; } }
         public List<string> TagStrings { get { return _tagStrings; } }
 
+        public RuntimeDiceBag()
+        {
+            _bagName = string.Empty;
+            _dieList = new List<RuntimeDie>();
+            _tagStrings = new List<string>();
+        }
+
         public RuntimeDiceBag(
             string bagName,
             List<RuntimeDie> dieList,
@@ -22,7 +29,6 @@ namespace Dice
             _bagName = bagName;
             _dieList = dieList;
             _tagStrings = tagStrings;
-
         }
     }
     

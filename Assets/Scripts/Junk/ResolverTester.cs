@@ -39,7 +39,6 @@ namespace Junk
 
             IReadOnlyList<StatusEffect> effects = new List<StatusEffect>() { effect };
 
-
             _playerData.SetCombatantName("Player");
             _playerData.SetHP(20);
             _playerData.SetActiveStatusEffects(effects);

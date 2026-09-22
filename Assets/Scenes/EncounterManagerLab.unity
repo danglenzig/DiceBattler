@@ -131,6 +131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e080d60240780424196c0e1f7b0e4e8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dice.EncounterManager
+  _defaultDiceBagData: {fileID: 11400000, guid: fc5f1eb9c38e9304ba6b7c40b26bc96b, type: 2}
 --- !u!114 &327942829
 MonoBehaviour:
   m_ObjectHideFlags: 0
