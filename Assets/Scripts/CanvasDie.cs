@@ -127,6 +127,8 @@ namespace Dice
             _currentDieData= dieData;
             _currentDieFaces = DiceTools.NumFaces( dieData.DeeType );
             _currentFaceIdx= 0;
+
+            PresentCurrentFace();
         }
 
         public void Roll()

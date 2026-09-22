@@ -10,5 +10,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15722280adc14a64dacf15bc0de8dc5f, type: 3}
-  m_Name: SimpleStateExitedEvent
+  m_Name: EncounterSimpleStateExitedEvent
   m_EditorClassIdentifier: Assembly-CSharp::EventChannels.SO_EventStringPayload

@@ -4,19 +4,32 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
+using SimpleStateMachine;
 
 namespace Dice
 {
+    public interface ITableau
+    {
+        public void SetPlayerDice(List<RuntimeDie> diceDatas);
+        public void SetOpponentDice(List<RuntimeDie> diceDatas);
+        public bool ReadyToRoll();
+        public void SetCombatants(CombatantData playerData, CombatantData opponentData);
+        public void Roll();
 
-    public class TurnTableau : MonoBehaviour
+        public void EncounterStart(RuntimeSSM stateMachine, string nextStateString);
+
+        public event System.Action<TableauResult> OnTableauResultAnnounced;
+    }
+
+
+    public class TurnTableau : MonoBehaviour, ITableau
     {
 
-        private const string ATTACK_TAG = "ACTION.ATTACK";
-        private const string EVASION_TAG = "ACTION.EVASION";
+        //private const string ATTACK_TAG = "ACTION.ATTACK";
+        //private const string EVASION_TAG = "ACTION.EVASION";
 
-        [SerializeField] private List<CanvasDie> _playerDice;
-        [SerializeField] private List<CanvasDie> _opponentDice;
+        [SerializeField] private List<CanvasDie> _playerCanvasDice;
+        [SerializeField] private List<CanvasDie> _opponentCanvasDice;
         [SerializeField] private TMP_Text _playerResultText;
         [SerializeField] private TMP_Text _opponentResultText;
 
@@ -38,11 +51,11 @@ namespace Dice
 
         private void OnEnable()
         {
-            foreach (CanvasDie d in _playerDice)
+            foreach (CanvasDie d in _playerCanvasDice)
             {
                 d.OnResultDecided += HandleOnDieStoppedRolling;
             }
-            foreach (CanvasDie d in _opponentDice)
+            foreach (CanvasDie d in _opponentCanvasDice)
             {
                 d.OnResultDecided += HandleOnDieStoppedRolling;
             }
@@ -50,15 +63,17 @@ namespace Dice
 
         private void OnDisable()
         {
-            foreach (CanvasDie d in _playerDice)
+            foreach (CanvasDie d in _playerCanvasDice)
             {
                 d.OnResultDecided -= HandleOnDieStoppedRolling;
             }
-            foreach (CanvasDie d in _opponentDice)
+            foreach (CanvasDie d in _opponentCanvasDice)
             {
                 d.OnResultDecided -= HandleOnDieStoppedRolling;
             }
         }
+
+
         void Start()
         {
             if (_useDefaultDiceSOs)
@@ -75,11 +90,11 @@ namespace Dice
             if (_playerData == null || _opponentData == null) return;
 
             // return early if any dice are still rolling
-            foreach (CanvasDie d in _playerDice)
+            foreach (CanvasDie d in _playerCanvasDice)
             {
                 if (d.IsRolling) return;
             }
-            foreach (CanvasDie d in _opponentDice)
+            foreach (CanvasDie d in _opponentCanvasDice)
             {
                 if (d.IsRolling) return;
             }
@@ -92,7 +107,7 @@ namespace Dice
             int opponentAttackTotal = 0;
             int opponentEvasionTotal = 0;
 
-            foreach (CanvasDie d in _playerDice)
+            foreach (CanvasDie d in _playerCanvasDice)
             {
                 RuntimeDieFace thisFace = d.GetCurrentRuntimeDieFace();
                 int intValue = thisFace.IntegerValue;
@@ -104,18 +119,18 @@ namespace Dice
 
                 //DebugDieFaceResult("Player", thisResult);
 
-                if (TagStringTools.IsAMatch(tags[0], ATTACK_TAG))
+                if (TagStringTools.IsAMatch(tags[0], ActionTagStrings.ATTACK))
                 {
                     playerAttackTotal += intValue;
                 }
-                if (TagStringTools.IsAMatch(tags[0], EVASION_TAG))
+                if (TagStringTools.IsAMatch(tags[0], ActionTagStrings.EVASION))
                 {
                     playerEvasionTotal += intValue;
                 }
 
             }
 
-            foreach (CanvasDie d in _opponentDice)
+            foreach (CanvasDie d in _opponentCanvasDice)
             {
                 RuntimeDieFace thisFace = d.GetCurrentRuntimeDieFace();
                 int intValue = thisFace.IntegerValue;
@@ -126,11 +141,11 @@ namespace Dice
 
                 //DebugDieFaceResult("Opponent", thisResult);
 
-                if (TagStringTools.IsAMatch(tags[0], ATTACK_TAG))
+                if (TagStringTools.IsAMatch(tags[0], ActionTagStrings.ATTACK))
                 {
                     opponentAttackTotal += intValue;
                 }
-                if (TagStringTools.IsAMatch(tags[0], EVASION_TAG))
+                if (TagStringTools.IsAMatch(tags[0], ActionTagStrings.EVASION))
                 {
                     opponentEvasionTotal += intValue;
                 }
@@ -148,14 +163,14 @@ namespace Dice
 
         private bool GetIsRolling()
         {
-            foreach (CanvasDie die in _playerDice)
+            foreach (CanvasDie die in _playerCanvasDice)
             {
                 if (die.IsRolling)
                 {
                     return true;
                 }
             }
-            foreach (CanvasDie die in _opponentDice)
+            foreach (CanvasDie die in _opponentCanvasDice)
             {
                 if (die.IsRolling)
                 {
@@ -167,16 +182,16 @@ namespace Dice
 
         private void SetupDefaultDice()
         {
-            if (_defaultPlayerDiceSOs.Count != _playerDice.Count) return;
-            if (_defaultOpponentDiceSOs.Count != _opponentDice.Count) return;
+            if (_defaultPlayerDiceSOs.Count != _playerCanvasDice.Count) return;
+            if (_defaultOpponentDiceSOs.Count != _opponentCanvasDice.Count) return;
 
             for (int i = 0; i < _defaultPlayerDiceSOs.Count; i++)
             {
-                _playerDice[i].SetRuntimeDieData(_defaultPlayerDiceSOs[i].GetRuntimeDie());
+                _playerCanvasDice[i].SetRuntimeDieData(_defaultPlayerDiceSOs[i].GetRuntimeDie());
             }
             for (int i = 0; i < _defaultOpponentDiceSOs.Count; i++)
             {
-                _opponentDice[i].SetRuntimeDieData(_defaultOpponentDiceSOs[i].GetRuntimeDie());
+                _opponentCanvasDice[i].SetRuntimeDieData(_defaultOpponentDiceSOs[i].GetRuntimeDie());
             }
         }
         
@@ -184,6 +199,46 @@ namespace Dice
         //=====
         // API
         //=====
+
+        public void SetPlayerDice(List<RuntimeDie> diceDatas)
+        {
+            // assert that diceDatas.Count == _playerCanvasDice.Count
+            if(diceDatas.Count != _playerCanvasDice.Count)
+            {
+                Debug.LogError($"###{name}: Incoming player dice data != the number of canvas dice");
+            }
+
+            for (int i = 0; i < diceDatas.Count; i++)
+            {
+                _playerCanvasDice[i].SetRuntimeDieData(diceDatas[i]);
+            }
+        }
+        public void SetOpponentDice(List<RuntimeDie> diceDatas)
+        {
+            // assert that diceDatas.Count == _opponentCanvasDice.Count
+            if (diceDatas.Count != _opponentCanvasDice.Count)
+            {
+                Debug.LogError($"###{name}: Incoming opponent dice data != the number of canvas dice");
+            }
+
+            for (int i = 0; i < diceDatas.Count; i++)
+            {
+                _opponentCanvasDice[i].SetRuntimeDieData(diceDatas[i]);
+            }
+        }
+
+        public bool ReadyToRoll()
+        {
+            foreach (CanvasDie d in _playerCanvasDice)
+            {
+                if (d.CurrentDieData == null) return false;
+            }
+            foreach(CanvasDie d in _opponentCanvasDice)
+            {
+                if (d.CurrentDieData == null) return false;
+            }
+            return true;
+        }
 
         public void SetCombatants(CombatantData playerData, CombatantData opponentData)
         {
@@ -195,20 +250,33 @@ namespace Dice
         {
             if (GetIsRolling()) return;
 
-            foreach (CanvasDie d in _playerDice)
+            foreach (CanvasDie d in _playerCanvasDice)
             {
                 if (d.CurrentDieData != null)
                 {
                     d.Roll();
                 }                
             }
-            foreach (CanvasDie d in _opponentDice)
+            foreach (CanvasDie d in _opponentCanvasDice)
             {
                 if (d.CurrentDieData != null)
                 {
                     d.Roll();
                 }
             }
+        }
+
+        public void EncounterStart(RuntimeSSM stateMachine, string nextStateString)
+        {
+            // do enconter start stuff;
+            // - Set up the player draw bag
+            // set up the opponent draw bag
+
+            if (!stateMachine.TryTakeTransition(nextStateString))
+            {
+                // throw an error
+            }
+            return;
         }
     }
 }
